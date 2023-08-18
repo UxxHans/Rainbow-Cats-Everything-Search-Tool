@@ -6,5 +6,5 @@ A small tool that allows you to search files extremely fast and easy.
   
 ## Visualization 效果图
 >![Image](Visuals/1.gif)
->![Image](Visuals/2.png)
->![Image](Visuals/3.png)
+>![Image](Visuals/2.jpg)
+>![Image](Visuals/3.jpg)
