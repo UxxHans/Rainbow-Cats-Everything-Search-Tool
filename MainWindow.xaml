@@ -1,0 +1,228 @@
+﻿<Window
+    x:Class="EverythingSearch.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:EverythingSearch"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:v="clr-namespace:EverythingSearch.View"
+    xmlns:vm="clr-namespace:EverythingSearch.ViewModel"
+    Title="小熊搜索"
+    Width="600"
+    Height="Auto"
+    MaxHeight="500"
+    d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
+    AllowsTransparency="True"
+    BorderBrush="Transparent"
+    Opacity="{Binding ConfigViewModel.Transparency}"
+    ResizeMode="CanMinimize"
+    SizeToContent="Height"
+    Topmost="True"
+    WindowStartupLocation="Manual"
+    WindowStyle="None"
+    mc:Ignorable="d">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+            <ScaleTransform x:Key="WindowScaleTransform" ScaleX="{Binding ConfigViewModel.Scale}" ScaleY="{Binding ConfigViewModel.Scale}" />
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Window.Background>
+        <SolidColorBrush Opacity="0" Color="Transparent" />
+    </Window.Background>
+
+    <Window.ContextMenu>
+        <v:ContextMenuMain />
+    </Window.ContextMenu>
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome
+            CaptionHeight="0"
+            CornerRadius="0"
+            GlassFrameThickness="0"
+            ResizeBorderThickness="0" />
+    </WindowChrome.WindowChrome>
+
+    <Expander Foreground="{Binding ConfigViewModel.BackgroundColorBrush}" IsExpanded="True">
+        <Expander.Header>
+            <TextBlock
+                Margin="2,0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                FontWeight="Bold"
+                Text="路径查找" />
+        </Expander.Header>
+
+        <Grid LayoutTransform="{StaticResource WindowScaleTransform}">
+            <Grid VerticalAlignment="Top">
+                <TextBox
+                    x:Name="SearchTextBox"
+                    Padding="70,15"
+                    VerticalAlignment="Center"
+                    Background="{Binding ConfigViewModel.BackgroundColorBrush}"
+                    BorderBrush="Transparent"
+                    BorderThickness="0"
+                    FontSize="25"
+                    Foreground="{Binding ConfigViewModel.ForegroundColorBrush}"
+                    Text="{Binding SearchContent, UpdateSourceTrigger=PropertyChanged}">
+
+                    <TextBox.Resources>
+                        <Style TargetType="{x:Type Border}">
+                            <Setter Property="CornerRadius" Value="30" />
+                        </Style>
+                    </TextBox.Resources>
+
+                    <TextBox.ContextMenu>
+                        <v:ContextMenuMain />
+                    </TextBox.ContextMenu>
+                </TextBox>
+
+                <Image
+                    Width="35"
+                    Height="35"
+                    Margin="20,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Source="/Resources/Search.png" />
+
+                <TextBlock
+                    Margin="72,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="Transparent"
+                    FontSize="25"
+                    Foreground="DarkGray"
+                    IsHitTestVisible="False"
+                    Text="搜索...">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Text, ElementName=SearchTextBox}" Value="">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <Image
+                    Width="35"
+                    Height="35"
+                    Margin="0,0,20,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Cursor="Hand"
+                    PreviewMouseDown="DragMoveMouseDown"
+                    Source="/Resources/Move.png" />
+            </Grid>
+
+            <ScrollViewer
+                Margin="30,70,30,0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                Background="#01FFFFFF"
+                CanContentScroll="True"
+                VirtualizingPanel.IsVirtualizing="True"
+                VirtualizingPanel.VirtualizationMode="Recycling"
+                Visibility="{Binding IsSearchResultVisible, Converter={StaticResource BoolToVisibility}}">
+
+                <ScrollViewer.Resources>
+                    <Style TargetType="ScrollBar">
+                        <Setter Property="Margin" Value="5" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Foreground" Value="Transparent" />
+                        <Setter Property="Opacity" Value="0.5" />
+                    </Style>
+                    <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">5</sys:Double>
+                </ScrollViewer.Resources>
+
+                <ItemsControl
+                    VerticalAlignment="Stretch"
+                    ItemsSource="{Binding ResultViewModels}"
+                    VirtualizingPanel.IsVirtualizing="True"
+                    VirtualizingPanel.VirtualizationMode="Recycling">
+
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button
+                                Margin="0,2"
+                                HorizontalContentAlignment="Stretch"
+                                Background="{Binding MainViewModel.ConfigViewModel.BackgroundColorBrush}"
+                                BorderBrush="Transparent"
+                                BorderThickness="0"
+                                Command="{Binding OpenFileInExplorerCommand}"
+                                Foreground="{Binding MainViewModel.ConfigViewModel.ForegroundColorBrush}">
+
+                                <Button.Resources>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="CornerRadius" Value="20" />
+                                    </Style>
+                                </Button.Resources>
+
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                    <Border
+                                                        x:Name="Background"
+                                                        Padding="8,2"
+                                                        Background="{TemplateBinding Background}"
+                                                        BorderBrush="Transparent">
+                                                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}" />
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="Background" Property="Opacity" Value="0.8" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+
+                                <StackPanel Margin="5">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="3*" />
+                                            <ColumnDefinition Width="2*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                            <TextBlock
+                                                MaxWidth="200"
+                                                FontWeight="Bold"
+                                                Text="{Binding Filename}" />
+                                            <TextBlock
+                                                Margin="5,0,0,0"
+                                                Text="{Binding Size}"
+                                                Visibility="{Binding IsFile, Converter={StaticResource BoolToVisibility}}" />
+                                        </StackPanel>
+
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            HorizontalAlignment="Right"
+                                            Text="{Binding DateModified}" />
+                                    </Grid>
+
+                                    <TextBlock Text="{Binding Path}" />
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+    </Expander>
+</Window>

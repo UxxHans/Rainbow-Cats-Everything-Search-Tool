@@ -1,0 +1,108 @@
+﻿<Window
+    x:Class="EverythingSearch.View.ConfigWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:EverythingSearch.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:EverythingSearch.ViewModel"
+    Title="设置"
+    Width="300"
+    d:DataContext="{d:DesignInstance Type=vm:ConfigViewModel}"
+    Icon="/Resources/Settings.png"
+    ResizeMode="NoResize"
+    SizeToContent="Height"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+
+    <Window.Resources>
+        <Style x:Key="PropertyStyle" TargetType="ItemsControl">
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <Grid Margin="5" Background="Transparent">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" MinWidth="100" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <StackPanel Margin="10" Orientation="Vertical">
+        <ItemsControl Style="{StaticResource PropertyStyle}">
+            <StackPanel
+                Grid.Column="0"
+                HorizontalAlignment="Stretch"
+                Orientation="Horizontal">
+                <Image
+                    Width="20"
+                    Height="20"
+                    VerticalAlignment="Center"
+                    Source="/Resources/Color.png" />
+                <TextBlock
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    Text="主题颜色" />
+            </StackPanel>
+
+            <ComboBox
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                ItemsSource="{Binding ThemeColors}"
+                SelectedItem="{Binding ThemeColorDisplay}" />
+        </ItemsControl>
+
+        <ItemsControl Style="{StaticResource PropertyStyle}">
+            <StackPanel
+                Grid.Column="0"
+                HorizontalAlignment="Stretch"
+                Orientation="Horizontal">
+                <Image
+                    Width="20"
+                    Height="20"
+                    VerticalAlignment="Center"
+                    Source="/Resources/Size.png" />
+                <TextBlock
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    Text="界面比例" />
+            </StackPanel>
+
+            <Slider
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                Maximum="2"
+                Minimum="0.35"
+                Value="{Binding Scale}" />
+
+        </ItemsControl>
+
+        <ItemsControl Style="{StaticResource PropertyStyle}">
+            <StackPanel
+                Grid.Column="0"
+                HorizontalAlignment="Stretch"
+                Orientation="Horizontal">
+                <Image
+                    Width="20"
+                    Height="20"
+                    VerticalAlignment="Center"
+                    Source="/Resources/Opacity.png" />
+                <TextBlock
+                    Margin="5,0,0,0"
+                    VerticalAlignment="Center"
+                    Text="透明度" />
+            </StackPanel>
+
+            <Slider
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                Maximum="1"
+                Minimum="0.35"
+                Value="{Binding Transparency}" />
+        </ItemsControl>
+    </StackPanel>
+</Window>
